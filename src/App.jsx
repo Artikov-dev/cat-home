@@ -6,7 +6,6 @@ import LikedCats from './components/LikedCats'
 import DislikedCats from './components/DislikedCats'
 
 const CAT_API_URL = 'https://api.thecatapi.com/v1/images/search'
-const STORAGE_KEY = 'catRatingApp'
 
 export default function App() {
   const [currentCat, setCurrentCat] = useState(null)
@@ -16,20 +15,43 @@ export default function App() {
   const [liked, setLiked] = useState(false)
   const [disliked, setDisliked] = useState(false)
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      try {
-        const { liked: savedLiked, disliked: savedDisliked } = JSON.parse(saved)
-        setLikedCats(savedLiked || [])
-        setDislikedCats(savedDisliked || [])
-      } catch (error) {
-        console.error('Error loading from localStorage:', error)
+  // Fetch reactions from backend
+  const fetchReactions = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/reactions-summary')
+      const data = await response.json()
+      if (data.success) {
+        const liked = []
+        const disliked = []
+        data.data.forEach(item => {
+          if (item.likes_count > 0) {
+            liked.push({ id: item.image_id, url: item.image_url })
+          }
+          if (item.dislikes_count > 0) {
+            disliked.push({ id: item.image_id, url: item.image_url })
+          }
+        })
+        setLikedCats(liked)
+        setDislikedCats(disliked)
       }
+    } catch (error) {
+      console.error('Error fetching reactions:', error)
     }
+  }
+
+  // Load reactions on mount
+  useEffect(() => {
+    fetchReactions()
     fetchNextCat()
   }, [])
+
+  // Update liked/disliked when lists or currentCat change
+  useEffect(() => {
+    if (currentCat) {
+      setLiked(likedCats.some(cat => cat.id === currentCat.id))
+      setDisliked(dislikedCats.some(cat => cat.id === currentCat.id))
+    }
+  }, [likedCats, dislikedCats, currentCat])
 
 
 
@@ -61,80 +83,42 @@ export default function App() {
   }
 
   // Handle like
-  const handleLike = () => {
+  const handleLike = async () => {
     if (!currentCat) return
 
-    if (liked) {
-      // Remove from liked
-      const newLikedCats = likedCats.filter((cat) => cat.id !== currentCat.id)
-      setLikedCats(newLikedCats)
-      setLiked(false)
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          liked: newLikedCats,
-          disliked: dislikedCats,
-        }))
-      } catch (error) {
-        console.error('Error saving to localStorage:', error)
-      }
-    } else {
-      // Add to liked (remove from disliked if present)
-      let newLikedCats = [...likedCats, currentCat]
-      let newDislikedCats = dislikedCats
-      if (disliked) {
-        newDislikedCats = dislikedCats.filter((cat) => cat.id !== currentCat.id)
-        setDisliked(false)
-      }
-      setLikedCats(newLikedCats)
-      setDislikedCats(newDislikedCats)
-      setLiked(true)
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          liked: newLikedCats,
-          disliked: newDislikedCats,
-        }))
-      } catch (error) {
-        console.error('Error saving to localStorage:', error)
-      }
+    try {
+      await fetch('http://localhost:5000/api/reactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image_id: currentCat.id,
+          image_url: currentCat.url,
+          reaction_type: 'like'
+        })
+      })
+      await fetchReactions()
+    } catch (error) {
+      console.error('Error posting like:', error)
     }
   }
 
   // Handle dislike
-  const handleDislike = () => {
+  const handleDislike = async () => {
     if (!currentCat) return
 
-    if (disliked) {
-      // Remove from disliked
-      const newDislikedCats = dislikedCats.filter((cat) => cat.id !== currentCat.id)
-      setDislikedCats(newDislikedCats)
-      setDisliked(false)
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          liked: likedCats,
-          disliked: newDislikedCats,
-        }))
-      } catch (error) {
-        console.error('Error saving to localStorage:', error)
-      }
-    } else {
-      // Add to disliked (remove from liked if present)
-      let newDislikedCats = [...dislikedCats, currentCat]
-      let newLikedCats = likedCats
-      if (liked) {
-        newLikedCats = likedCats.filter((cat) => cat.id !== currentCat.id)
-        setLiked(false)
-      }
-      setDislikedCats(newDislikedCats)
-      setLikedCats(newLikedCats)
-      setDisliked(true)
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          liked: newLikedCats,
-          disliked: newDislikedCats,
-        }))
-      } catch (error) {
-        console.error('Error saving to localStorage:', error)
-      }
+    try {
+      await fetch('http://localhost:5000/api/reactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image_id: currentCat.id,
+          image_url: currentCat.url,
+          reaction_type: 'dislike'
+        })
+      })
+      await fetchReactions()
+    } catch (error) {
+      console.error('Error posting dislike:', error)
     }
   }
 
@@ -144,27 +128,11 @@ export default function App() {
     if (liked) {
       setLiked(false)
     }
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        liked: [],
-        disliked: dislikedCats,
-      }))
-    } catch (error) {
-      console.error('Error saving to localStorage:', error)
-    }
   }
   const clearDislikes = () => {
     setDislikedCats([])
     if (disliked) {
       setDisliked(false)
-    }
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        liked: likedCats,
-        disliked: [],
-      }))
-    } catch (error) {
-      console.error('Error saving to localStorage:', error)
     }
   }
 
