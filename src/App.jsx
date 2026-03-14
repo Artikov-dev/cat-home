@@ -18,7 +18,7 @@ export default function App() {
   // Fetch reactions from backend
   const fetchReactions = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/reactions-summary')
+      const response = await fetch('http://localhost:5001/api/reactions-summary')
       const data = await response.json()
       if (data.success) {
         const liked = []
@@ -87,7 +87,7 @@ export default function App() {
     if (!currentCat) return
 
     try {
-      await fetch('http://localhost:5000/api/reactions', {
+      await fetch('http://localhost:5001/api/reactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -107,7 +107,7 @@ export default function App() {
     if (!currentCat) return
 
     try {
-      await fetch('http://localhost:5000/api/reactions', {
+      await fetch('http://localhost:5001/api/reactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
