@@ -23,7 +23,7 @@ export default function CatViewer({
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
-        Current Cat 🐱
+        Current Cat 
       </motion.h2>
       <motion.div
         className="cat-image-container"

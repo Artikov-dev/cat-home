@@ -24,7 +24,7 @@ export default function Controls({
         animate={liked ? { scale: [1, 1.1, 1] } : {}}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <span className={liked ? 'emoji-beat' : ''}>❤️</span> Like
+        <span className={liked ? 'emoji-beat' : ''}></span> Like
       </motion.button>
       <motion.button
         className={`btn-dislike ${disliked ? 'active' : ''}`}
@@ -35,7 +35,7 @@ export default function Controls({
         animate={disliked ? { scale: [1, 1.1, 1] } : {}}
         transition={{ type: "spring", stiffness: 300 }}
       >
-        <span className={disliked ? 'emoji-shake' : ''}>💔</span> Dislike
+        <span className={disliked ? 'emoji-shake' : ''}></span> Dislike
       </motion.button>
       <motion.button
         className="btn-next"
@@ -44,7 +44,7 @@ export default function Controls({
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
       >
-        🚀 Next Cat
+         Next Cat
       </motion.button>
     </motion.div>
   )

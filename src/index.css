@@ -126,6 +126,11 @@ body {
   75% { transform: translateX(5px); }
 }
 
+@keyframes wave {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
+}
+
 .emoji-beat {
   display: inline-block;
   animation: beat 1s infinite;
@@ -134,6 +139,25 @@ body {
 .emoji-shake {
   display: inline-block;
   animation: shake 0.5s infinite;
+}
+
+.liquid-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(100, 200, 255, 0.3), rgba(100, 200, 255, 0.6));
+  border-radius: 0 0 16px 16px;
+  transition: height 1s ease;
+  animation: wave 3s ease-in-out infinite;
+}
+
+.stat-card.liked .liquid-fill {
+  background: linear-gradient(180deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0.6));
+}
+
+.stat-card.disliked .liquid-fill {
+  background: linear-gradient(180deg, rgba(244, 67, 54, 0.3), rgba(244, 67, 54, 0.6));
 }
 
 button {
@@ -226,51 +250,120 @@ button:disabled {
 /* Stats */
 .stats {
   display: flex;
-  gap: 30px;
   justify-content: center;
-  margin: 20px 0;
-  flex-wrap: wrap;
+  margin: 30px 0;
   animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.stat-item {
+.stats-container {
   background: rgba(255, 255, 255, 0.05);
-  padding: 20px 30px;
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  max-width: 600px;
+  width: 100%;
+}
+
+.stats-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.stats-header h3 {
+  color: #64c8ff;
+  font-size: 24px;
+  font-weight: 300;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.stat-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.stat-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+.stat-card.liked {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), rgba(76, 175, 80, 0.05));
+}
+
+.stat-card.disliked {
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(244, 67, 54, 0.05));
+}
+
+.stat-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
 }
 
-.stat-item.liked {
-  border-left: 3px solid #4caf50;
+.stat-icon {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-.stat-item.disliked {
-  border-left: 3px solid #ff6b6b;
+.stat-info {
+  text-align: center;
+  z-index: 2;
+  position: relative;
 }
 
 .stat-label {
   font-size: 12px;
   color: #a0a0a0;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 500;
 }
 
-.stat-count {
-  font-size: 36px;
+.stat-number {
+  font-size: 32px;
   font-weight: bold;
-  color: #64c8ff;
-  animation: slideUp 1s ease;
+  color: #ffffff;
+  margin-bottom: 5px;
 }
 
+.stat-percentage {
+  font-size: 14px;
+  color: #64c8ff;
+  font-weight: 300;
+}
+
+.liquid-fill {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(100, 200, 255, 0.3), rgba(100, 200, 255, 0.6));
+  border-radius: 0 0 16px 16px;
+  transition: height 1s ease;
+}
+
+.stat-card.liked .liquid-fill {
+  background: linear-gradient(180deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0.6));
+}
+
+.stat-card.disliked .liquid-fill {
+  background: linear-gradient(180deg, rgba(244, 67, 54, 0.3), rgba(244, 67, 54, 0.6));
+}
 /* Sections */
 .sections-container {
   display: grid;
@@ -278,6 +371,12 @@ button:disabled {
   gap: 30px;
   margin-top: 30px;
   animation: slideUp 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.controls{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
 }
 
 .section {
