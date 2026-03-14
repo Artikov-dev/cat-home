@@ -21,7 +21,7 @@ export default function DislikedCats({ cats, onClear }) {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
         >
-          <span className={cats.length > 0 ? 'emoji-shake' : ''}>💔</span> Disliked Cats ({cats.length})
+          <span className={cats.length > 0 ? 'emoji-shake' : ''}></span> Disliked Cats ({cats.length})
         </motion.h2>
         {cats.length > 0 && (
           <motion.button
@@ -30,7 +30,7 @@ export default function DislikedCats({ cats, onClear }) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            🗑️ Clear Dislikes
+             Clear Dislikes
           </motion.button>
         )}
       </div>
@@ -42,7 +42,7 @@ export default function DislikedCats({ cats, onClear }) {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.4 }}
         >
-          No disliked cats yet. Rate some cats to see them here! 😿
+          No disliked cats yet. Rate some cats to see them here! 
         </motion.div>
       ) : (
         <motion.div
