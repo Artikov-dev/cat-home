@@ -12,13 +12,15 @@ const PORT = process.env.PORT || 5000
 // Middleware
 app.use(cors({
   origin: [
-    'http://localhost:3000', // for local development
-    'http://localhost:5173', // Vite dev server
-    'https://cat-home-frontend.vercel.app', // Vercel production (update with your actual Vercel URL)
-    /\.vercel\.app$/ // Allow all Vercel domains
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://cat-home-frontend.vercel.app',
+    /\.vercel\.app$/
   ],
   credentials: true
 }))
+
+app.use(express.json())
 
 // Initialize database
 initDB()
@@ -34,9 +36,7 @@ app.get('/health', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack)
-  res.status(const ml = "https://cat-home-backend.onrender.com";
-...
-fetch(`${ml}/api/reactions-summary`)).json({ error: 'Something went wrong!' })
+  res.status(500).json({ error: 'Something went wrong!' })
 })
 
 app.listen(PORT, () => {
