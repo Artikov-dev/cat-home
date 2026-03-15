@@ -4,9 +4,9 @@ import CatViewer from './components/CatViewer'
 import Stats from './components/Stats'
 import LikedCats from './components/LikedCats'
 import DislikedCats from './components/DislikedCats'
+import API_URL from './config/api'
 
 const CAT_API_URL = 'https://api.thecatapi.com/v1/images/search'
-const API_URL = import.meta.env.VITE_API_URL || "https://cat-home-backend.onrender.com"
 
 export default function App() {
   const [currentCat, setCurrentCat] = useState(null)
