@@ -398,6 +398,7 @@ button:disabled {
 .section h2 {
   font-size: 20px;
   margin-bottom: 15px;
+  color: #ffffff;
   padding-bottom: 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   text-transform: uppercase;
@@ -458,7 +459,7 @@ button:disabled {
 /* Title */
 h1 {
   text-align: center;
-  background: linear-gradient(135deg, #64c8ff 0%, #4caf50 100%);
+ color: white;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

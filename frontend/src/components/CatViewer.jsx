@@ -18,7 +18,7 @@ export default function CatViewer({
       transition={{ duration: 0.6, ease: "easeOut" }}
     >
       <motion.h2
-        style={{ marginBottom: '10px', color: '#667eea' }}
+        style={{ marginBottom: '10px', color: 'white' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.5 }}
