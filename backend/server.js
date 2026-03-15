@@ -34,7 +34,9 @@ app.get('/health', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack)
-  res.status(500).json({ error: 'Something went wrong!' })
+  res.status(const ml = "https://cat-home-backend.onrender.com";
+...
+fetch(`${ml}/api/reactions-summary`)).json({ error: 'Something went wrong!' })
 })
 
 app.listen(PORT, () => {
