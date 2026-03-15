@@ -6,6 +6,7 @@ import LikedCats from './components/LikedCats'
 import DislikedCats from './components/DislikedCats'
 
 const CAT_API_URL = 'https://api.thecatapi.com/v1/images/search'
+const API_URL = import.meta.env.VITE_API_URL || "https://cat-home-backend.onrender.com"
 
 export default function App() {
   const [currentCat, setCurrentCat] = useState(null)
@@ -18,7 +19,7 @@ export default function App() {
   // Fetch reactions from backend
   const fetchReactions = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/reactions-summary')
+      const response = await fetch(`${API_URL}/api/reactions-summary`)
       const data = await response.json()
       if (data.success) {
         const liked = []
@@ -87,7 +88,7 @@ export default function App() {
     if (!currentCat) return
 
     try {
-      await fetch('http://localhost:5001/api/reactions', {
+      await fetch(`${API_URL}/api/reactions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -107,7 +108,7 @@ export default function App() {
     if (!currentCat) return
 
     try {
-      await fetch('http://localhost:5001/api/reactions', {
+      await fetch(`${API_URL}/api/reactions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
