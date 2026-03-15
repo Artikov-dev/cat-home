@@ -146,12 +146,34 @@ export default function App() {
     }
   }, [currentCat, liked, disliked, fetchReactions])
 
-  const clearLikes = () => {
-    setLikedCats([])
-    if (liked) {
-      setLiked(false)
+  const clearLikes = useCallback(async () => {
+    const password = prompt('Enter admin password')
+
+    if (password === null) {
+      return
     }
-  }
+
+    try {
+      const response = await fetch(`${API_URL}/api/reactions/clear`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ password })
+      })
+      const data = await response.json()
+
+      alert(data.message)
+
+      if (response.ok) {
+        await fetchReactions()
+      }
+    } catch (error) {
+      console.error('Error clearing reactions:', error)
+      alert('Failed to clear reactions')
+    }
+  }, [fetchReactions])
+
   const clearDislikes = () => {
     setDislikedCats([])
     if (disliked) {
@@ -202,6 +224,10 @@ export default function App() {
 
       <Stats likedCount={likedCats.length} dislikedCount={dislikedCats.length} />
 
+      <button type="button" onClick={clearLikes}>
+        Clear Likes
+      </button>
+
       <motion.div
         className="sections-container"
         initial={{ opacity: 0, y: 50 }}
@@ -245,4 +271,3 @@ export default function App() {
     </motion.div>
   )
 }
-8

@@ -1,4 +1,5 @@
 const { pool } = require('../config/db')
+const CLEAR_REACTIONS_PASSWORD = 'antiparol'
 
 // Get reaction summary
 const getReactionSummary = async (req, res) => {
@@ -95,8 +96,27 @@ const getReactionsForImage = async (req, res) => {
   }
 }
 
+// Clear all reactions
+const clearReactions = async (req, res) => {
+  try {
+    const { password } = req.body
+
+    if (password !== CLEAR_REACTIONS_PASSWORD) {
+      return res.status(403).json({ message: 'Wrong password' })
+    }
+
+    await pool.query('DELETE FROM reactions;')
+
+    res.json({ message: 'All reactions cleared' })
+  } catch (error) {
+    console.error('Error clearing reactions:', error)
+    res.status(500).json({ message: 'Failed to clear reactions' })
+  }
+}
+
 module.exports = {
   getReactionSummary,
   addReaction,
-  getReactionsForImage
+  getReactionsForImage,
+  clearReactions
 }
