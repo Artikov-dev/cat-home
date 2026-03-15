@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import CatViewer from './components/CatViewer'
 import Stats from './components/Stats'
@@ -15,11 +15,15 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [liked, setLiked] = useState(false)
   const [disliked, setDisliked] = useState(false)
+  const [error, setError] = useState(null)
 
   // Fetch reactions from backend
-  const fetchReactions = async () => {
+  const fetchReactions = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/api/reactions-summary`)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const data = await response.json()
       if (data.success) {
         const liked = []
@@ -34,17 +38,21 @@ export default function App() {
         })
         setLikedCats(liked)
         setDislikedCats(disliked)
+        setError(null)
+      } else {
+        throw new Error('Failed to fetch reactions')
       }
     } catch (error) {
       console.error('Error fetching reactions:', error)
+      setError('Failed to load reactions. Please check your connection.')
     }
-  }
+  }, [])
 
   // Load reactions on mount
   useEffect(() => {
     fetchReactions()
     fetchNextCat()
-  }, [])
+  }, [fetchReactions])
 
   // Update liked/disliked when lists or currentCat change
   useEffect(() => {
@@ -54,16 +62,18 @@ export default function App() {
     }
   }, [likedCats, dislikedCats, currentCat])
 
-
-
   // Fetch a new cat
-  const fetchNextCat = async () => {
+  const fetchNextCat = useCallback(async () => {
     setLoading(true)
     setLiked(false)
     setDisliked(false)
+    setError(null)
 
     try {
       const response = await fetch(CAT_API_URL)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const data = await response.json()
       if (data && data.length > 0) {
         const newCat = data[0]
@@ -75,20 +85,23 @@ export default function App() {
         setCurrentCat(newCat)
         setLiked(isLiked)
         setDisliked(isDisliked)
+      } else {
+        throw new Error('No cat data received')
       }
     } catch (error) {
       console.error('Error fetching cat:', error)
+      setError('Failed to load cat image. Please try again.')
     } finally {
       setLoading(false)
     }
-  }
+  }, [likedCats, dislikedCats])
 
   // Handle like
-  const handleLike = async () => {
-    if (!currentCat) return
+  const handleLike = useCallback(async () => {
+    if (!currentCat || liked || disliked) return
 
     try {
-      await fetch(`${API_URL}/api/reactions`, {
+      const response = await fetch(`${API_URL}/api/reactions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -97,18 +110,23 @@ export default function App() {
           reaction_type: 'like'
         })
       })
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       await fetchReactions()
+      setError(null)
     } catch (error) {
       console.error('Error posting like:', error)
+      setError('Failed to save like. Please try again.')
     }
-  }
+  }, [currentCat, liked, disliked, fetchReactions])
 
   // Handle dislike
-  const handleDislike = async () => {
-    if (!currentCat) return
+  const handleDislike = useCallback(async () => {
+    if (!currentCat || liked || disliked) return
 
     try {
-      await fetch(`${API_URL}/api/reactions`, {
+      const response = await fetch(`${API_URL}/api/reactions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -117,13 +135,17 @@ export default function App() {
           reaction_type: 'dislike'
         })
       })
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       await fetchReactions()
+      setError(null)
     } catch (error) {
       console.error('Error posting dislike:', error)
+      setError('Failed to save dislike. Please try again.')
     }
-  }
+  }, [currentCat, liked, disliked, fetchReactions])
 
-  
   const clearLikes = () => {
     setLikedCats([])
     if (liked) {
@@ -150,7 +172,7 @@ export default function App() {
 
     window.addEventListener('keydown', handleKeyPress)
     return () => window.removeEventListener('keydown', handleKeyPress)
-  }, [currentCat, liked, disliked, likedCats, dislikedCats])
+  }, [handleLike, handleDislike, fetchNextCat])
 
   return (
     <motion.div
@@ -189,6 +211,26 @@ export default function App() {
         <LikedCats cats={likedCats} onClear={clearLikes} />
         <DislikedCats cats={dislikedCats} onClear={clearDislikes} />
       </motion.div>
+
+      {error && (
+        <motion.div
+          className="error-message"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          style={{
+            backgroundColor: '#ff4444',
+            color: 'white',
+            padding: '10px',
+            borderRadius: '5px',
+            margin: '20px auto',
+            maxWidth: '400px',
+            textAlign: 'center'
+          }}
+        >
+          {error}
+        </motion.div>
+      )}
 
       <motion.div
         style={{ marginTop: '40px', textAlign: 'center', color: 'white' }}

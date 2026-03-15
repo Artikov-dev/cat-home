@@ -42,7 +42,8 @@ export default function CatViewer({
             src={currentCat.url}
             alt="Current cat"
             onError={(e) => {
-              e.target.style.display = 'none'
+              console.warn('Failed to load cat image, trying next one')
+              onNext() // Automatically fetch next cat if current image fails
             }}
             onLoad={(e) => {
               e.target.style.display = 'block'
