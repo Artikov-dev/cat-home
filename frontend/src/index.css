@@ -1,3 +1,4 @@
+/* Updated CSS for Cat Rating App - Added gradient background and enhanced viewer styles */
 * {
   margin: 0;
   padding: 0;
@@ -14,7 +15,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #000000;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
   min-height: 100vh;
   color: #ffffff;
 }
@@ -31,13 +32,13 @@ body {
 
 /* Main viewer styles */
 .cat-viewer {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(100, 200, 255, 0.2);
   border-radius: 20px;
   padding: 40px;
   margin-bottom: 30px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(15px);
   text-align: center;
   animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
